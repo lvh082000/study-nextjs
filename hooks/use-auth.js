@@ -1,15 +1,15 @@
 import useSWR from "swr";
-
-import userFetcher from "../libs/user-api";
+import { getProfile } from "../libs/auth-api";
 
 export function useUser() {
-  const { data, mutate, error } = useSWR("user/profile", userFetcher, {
-    dedupingInterval: 60 * 60 * 1000, // 1hr
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-  });
+  const { data, mutate, error } = useSWR("api_user", getProfile);
+
+  const loading = !data && !error;
+  const loggedIn = !error && !!data;
 
   return {
+    loading,
+    loggedIn,
     user: data,
     mutate,
   };
