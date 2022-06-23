@@ -20,6 +20,10 @@ export default function LoginPage() {
       const { token, refreshToken } = response;
 
       if (token && refreshToken) {
+        window.localStorage.setItem(
+          "auth",
+          JSON.stringify({ token: token, refreshToken: refreshToken })
+        );
         Cookie.set("access_token", token);
         Cookie.set("refresh_token", refreshToken);
         mutate("auth", { token: token, refreshToken: refreshToken });
