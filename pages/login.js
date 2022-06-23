@@ -1,33 +1,47 @@
 import Cookie from "js-cookie";
-import { useUser } from "../hooks/use-auth";
-import { login } from "../libs/auth-api";
-import React, { useEffect } from "react";
 import Router from "next/router";
+import { useEffect, useState } from "react";
+import { mutate } from "swr";
+import { login } from "../libs/auth-api";
 
 export default function LoginPage() {
-  const { mutate, loggedIn } = useUser();
+  const accessToken = Cookie.get("access_token");
+  const refreshToken = Cookie.get("refresh_token");
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLoginClick = async () => {
+    setIsLoading(true);
     try {
       const response = await login({
         email: "lvh080020@gmail.com",
         password: "123123",
-      }); 
-      await mutate();
+      });
       const { token, refreshToken } = response;
 
-      Cookie.set("access_token", token);
-      Cookie.set("refresh_token", refreshToken);
+      if (token && refreshToken) {
+        Cookie.set("access_token", token);
+        Cookie.set("refresh_token", refreshToken);
+        mutate("auth", { token: token, refreshToken: refreshToken });
+        Router.push("/");
+      }
     } catch (error) {
       console.log("failed to login", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (loggedIn) Router.replace("/");
-  }, [loggedIn]);
+    if (accessToken && refreshToken) Router.replace("/");
+  }, [accessToken, refreshToken]);
 
-  if (loggedIn) return <> Redirecting.... </>;
+  if (isLoading)
+    return (
+      <div>
+        <h1>Redirecting...</h1>
+      </div>
+    );
 
   return (
     <div>
