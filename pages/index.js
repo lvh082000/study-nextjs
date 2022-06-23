@@ -2,6 +2,7 @@ import Cookie from "js-cookie";
 import Router from "next/router";
 import { useEffect } from "react";
 import useSWR, { mutate } from "swr";
+import { MainLayout } from '../components/layout';
 import { getProfile } from "../libs/auth-api";
 
 export default function HomePage() {
@@ -30,3 +31,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+HomePage.Layout = MainLayout
