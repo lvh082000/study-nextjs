@@ -1,30 +1,31 @@
 import Cookie from "js-cookie";
 import Router from "next/router";
 import { useEffect } from "react";
-import { mutate } from "swr";
+import useSWR from "swr";
 import { MainLayout } from "../components/layout";
+import { getProfile } from "../libs/auth-api";
 
-export default function HomePage() {
+export default function ProfilePage() {
   const accessToken = Cookie.get("access_token");
   const refreshToken = Cookie.get("refresh_token");
 
-  const handleLogoutClick = async () => {
-    Cookie.remove("access_token");
-    Cookie.remove("refresh_token");
-    mutate("auth", null);
-    Router.push(`/login`);
-  };
+  const { data, error } = useSWR("user", getProfile);
 
   useEffect(() => {
     if (!accessToken && !refreshToken) Router.replace("/login");
   }, [accessToken, refreshToken]);
 
+  if (error) return <h1>Has error</h1>;
+
+  if (!data) return <h1>Loading profile</h1>;
+
   return (
     <div>
-      <h1>Home page</h1>
-      <button onClick={handleLogoutClick}>Logout</button>
+      <h1>Profile page</h1>
+      <h5>Name: {data?.data?.name}</h5>
+      <h5>Email address: {data?.data?.email}</h5>
     </div>
   );
 }
 
-HomePage.Layout = MainLayout;
+ProfilePage.Layout = MainLayout;

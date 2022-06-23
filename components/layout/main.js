@@ -15,6 +15,10 @@ export function MainLayout({ children }) {
           <a style={{ textDecorationLine: "underline", marginLeft: "20px" }}>Blog</a>
         </Link>
 
+        <Link href="/profile">
+          <a style={{ textDecorationLine: "underline", marginLeft: "20px" }}>Profile</a>
+        </Link>
+
         {children}
       </div>
 
