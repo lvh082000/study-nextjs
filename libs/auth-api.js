@@ -5,5 +5,8 @@ export const login = async (payload) => {
 };
 
 export const getProfile = async () => {
-  return axiosClient.get("/user/profile");
+  const response = await axiosClient.get("/user/profile");
+  if (response?.data)
+    window.localStorage.setItem("user", JSON.stringify(response?.data));
+  return response;
 };

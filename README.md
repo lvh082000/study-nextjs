@@ -15,6 +15,7 @@ yarn && yarn dev
           + multi layout (MainLayout, EmptyLayout, Layout)
 - React hook
 - handle api with axios && SWR
+- cache api local storage
  
 #### Routes private http://localhost:3000 & http://localhost:3000/profile
 - rule: logged
